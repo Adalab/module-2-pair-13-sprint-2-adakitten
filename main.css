@@ -3,6 +3,7 @@
     height: 100px;
     position: relative;
     width: 100px;
+    border-radius: 50%;
 }
 
 .face {
@@ -13,4 +14,5 @@
     position: absolute;
     top: 50%;
     transform: translate(-50%, -60%) rotate(90deg);
+
 }
