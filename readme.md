@@ -50,7 +50,7 @@ La solución del ejercicio completo se subirá al final del módulo, si en una s
 
 #### 2.13 Peticiones al servidor I
 
-- [ ] 1. **LISTADO:** Obtener listado de gatitos desde el servidor
+- [x] 1. **LISTADO:** Obtener listado de gatitos desde el servidor
 
 #### 2.14 Peticiones al servidor II
 
