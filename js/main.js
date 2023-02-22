@@ -62,27 +62,48 @@ console.log(getinfoKitten());
 
 //Funciones
 function renderKitten(kittenData) {
-    const kitten = `<li class="card">
-    <article>
-      <img
-        class="card_img"
-        src=${kittenData.image}
-        alt="gatito"
-      />
-      <h3 class="card_title">${kittenData.name}</h3>
-      <h3 class="card_race">${kittenData.race}</h3>
-      <p class="card_description">
-      ${kittenData.desc}
-      </p>
-    </article>
-    </li>`;
-    return kitten;
+    const liElement = document.createElement('li');
+    liElement.classList.add('card');
+
+    const articleElement = document.createElement('article');
+    const imgElement = document.createElement('img');
+    const h3ElementName = document.createElement('h3');
+    const h3ElementRace = document.createElement('h3');
+    const pElement = document.createElement('p');
+
+    imgElement.setAttribute("src", `${kittenData.image}`);
+    imgElement.setAttribute("class", "card_img");
+    imgElement.setAttribute("alt", "gatito");
+
+    const h3ContentName = document.createTextNode(kittenData.name);
+    const h3ContentRace = document.createTextNode(kittenData.race);
+    const pContent = document.createTextNode(kittenData.desc);
+
+
+    h3ElementName.appendChild(h3ContentName);
+    h3ElementRace.appendChild(h3ContentRace);
+    pElement.appendChild(pContent);
+
+    h3ElementName.setAttribute("class", "card_title");
+    h3ElementRace.setAttribute("class", "card_race");
+    pElement.setAttribute("class", "card_description");
+
+
+    articleElement.append(imgElement, h3ElementName, h3ElementRace, pElement);
+    // articleElement.appendChild(h3ElementName);
+    // articleElement.appendChild(h3ElementRace);
+    // articleElement.appendChild(pElement);
+
+    console.log(articleElement);
+    liElement.appendChild(articleElement);
+
+    return liElement;
 }
 
 function renderKittenList(listado) {
     listElement.innerHTML = "";
     for (const kittenItem of listado) {
-        listElement.innerHTML += renderKitten(kittenItem);
+        listElement.appendChild(renderKitten(kittenItem));
     }
 }
 
@@ -134,11 +155,38 @@ function addNewKitten(event) {
         race: valueRace,
     };
 
-    kittenDataList.push(newKittenDataObject);
-    renderKittenList(kittenDataList);
-    resetValue()
+    fetch(`https://dev.adalab.es/api/kittens/${GITHUB_USER}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newKittenDataObject),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                //Completa y/o modifica el código:
+                //Agrega el nuevo gatito al listado  
+                kittenDataList.push(newKittenDataObject);
+                //Guarda el listado actualizado en el local stoarge
+                localStorage.setItem('listkitten', JSON, stringify(kittenDataList));
+                //Visualiza nuevamente el listado de gatitos   
+
+                renderKittenList(kittenDataList);
+                //Limpia los valores de cada input
+                resetValue()
+
+            } else {
+                //muestra un mensaje de error.
+            }
+        });
+
+
+
+
 
 }
+
+
+
 //Cancelar la búsqueda de un gatito
 function cancelNewKitten(event) {
     event.preventDefault();
