@@ -179,6 +179,8 @@ function addNewKitten(event) {
                 //Limpia los valores de cada input
                 resetValue()
 
+                //  localStorage.remove('kittenList');
+
             } else {
                 //muestra un mensaje de error.
             }
