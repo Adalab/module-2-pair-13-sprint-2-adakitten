@@ -41,23 +41,28 @@ const inputSearchRace = document.querySelector('.js-input-search-race');
 let kittenDataList = [];
 const GITHUB_USER = 'celsrami';
 const SERVER_URL = `https://dev.adalab.es/api/kittens/${GITHUB_USER}`;
+const kittenListStored = JSON.parse(localStorage.getItem('kittensList'));
 
 function getinfoKitten() {
-    fetch(SERVER_URL, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    }).then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            kittenDataList = data.results;
-            renderKittenList(kittenDataList);
-            console.log(kittenDataList);
-        })
-
+    if (kittenListStored) {
+        kittenDataList = kittenListStored;
+        renderKittenList(kittenDataList);
+    } else {
+        fetch(SERVER_URL, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        }).then((response) => response.json())
+            .then((data) => {
+                kittenDataList = data.results;
+                console.log(kittenDataList)
+                localStorage.setItem('kittensList', JSON.stringify(kittenDataList));
+                renderKittenList(kittenDataList);
+            })
+    }
 
 }
 getinfoKitten();
-console.log(getinfoKitten());
+
 //Completa el código;
 
 //Funciones
@@ -183,6 +188,23 @@ function addNewKitten(event) {
 
 
 
+    fetch(`https://dev.adalab.es/api/kittens/${GITHUB_USER}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newKittenDataObject),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                kittenDataList.push(newKittenDataObject);
+                localStorage.setItem('kittensList', JSON.stringify(newKittenDataObject));
+                renderKittenList(kittenDataList);
+                resetValue()
+            } else {
+                labelMessageError.innerHTML = "no"
+            }
+        });
+
 }
 
 
@@ -215,8 +237,3 @@ linkNewFormElememt.addEventListener("click", handleClickNewCatForm);
 searchButton.addEventListener("click", filterKitten);
 buttonAdd.addEventListener("click", addNewKitten);
 buttonCancelForm.addEventListener("click", cancelNewKitten);
-
-
-
-
-
